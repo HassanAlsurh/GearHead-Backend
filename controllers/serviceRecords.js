@@ -66,7 +66,28 @@ const update = async (req, res) => {
     }
 }
 
+const deleteRecord = async (req, res) => {
+    try {
+        const updatedVehicle = await Vehicle.findByIdAndUpdate(
+            req.params.vehicleId,
+            {
+                $pull: { serviceRecords: { _id: req.params.recordId } }
+            },
+            { returnDocument: 'after' }
+        );
+
+        if (!updatedVehicle) {
+            return res.status(404).json({ err: 'Vehicle not found' });
+        }
+
+        res.status(200).json(updatedVehicle);
+    } catch (err) {
+        res.status(500).json({ err: err.message })
+    }
+}
+
 module.exports = {
     create,
     update,
+    deleteRecord
 }

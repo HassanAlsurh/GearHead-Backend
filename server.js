@@ -26,6 +26,12 @@ app.use(cors())
 app.use(express.json())
 app.use(morgan('dev'))
 
+app.get('/', (req, res) => {res.send("GearHead's Backend is ONLINE!")})
+app.post('/auth/sign-up', authCtrl.signUp)
+app.post('/auth/sign-in', authCtrl.signIn)
+
+app.post('/vehicles', verifyToken, vehicleCtrl.create)
+
 app.listen(PORT, () => {
   console.log(`The express app is ready on port ${PORT}! 😀`)
 })

@@ -33,6 +33,40 @@ const create = async (req, res) => {
     }
 }
 
+const update = async (req, res) => {
+    try {
+        const vehicle = await Vehicle.findById(req.params.vehicleId);
+
+        if (!vehicle) {
+            return res.status(404).json({ err: 'Vehicle not found' })
+        }
+
+        if (!vehicle.owner.equals(req.user._id)) {
+            return res.status(403).send("You're not authorized to edit this vehicle's records!")
+        }
+
+        const record = vehicle.serviceRecords.id(req.params.recordId);
+
+        if (!record) {
+            return res.status(404).json({ err: 'Service record not found' })
+        }
+
+
+        record.category = req.body.category || record.category
+        record.description = req.body.description || record.description
+        record.cost = req.body.cost ?? record.cost
+        record.mileageAtService = req.body.mileageAtService ?? record.mileageAtService
+        record.date = req.body.date || record.date
+
+        await vehicle.save();
+
+        res.status(200).json(vehicle);
+    } catch (err) {
+        res.status(500).json({ err: err.message })
+    }
+}
+
 module.exports = {
     create,
+    update,
 }

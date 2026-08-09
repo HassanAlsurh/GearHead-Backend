@@ -74,10 +74,29 @@ const update = async (req, res) => {
   }
 };
 
+const deleteVehicle = async (req, res) => {
+  try {
+    const vehicle = await Vehicle.findById(req.params.vehicleId);
+
+    if (!vehicle) {
+      return res.status(404).json({ err: "Vehicle not found" });
+    }
+
+    if (!vehicle.owner.equals(req.user._id)) {
+      return res.status(403).send("Only the owner can delete this vehicle!");
+    }
+
+    const deletedVehicle = await Vehicle.findByIdAndDelete(req.params.vehicleId);
+    res.status(200).json(deletedVehicle);
+  } catch (err) {
+    res.status(500).json({ err: err.message });
+  }
+};
 
 module.exports = {
   create,
   index,
   show,
   update,
-}
+  deleteVehicle,
+};

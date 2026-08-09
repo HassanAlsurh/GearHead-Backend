@@ -1,5 +1,3 @@
-// Service Records controller
-
 const Vehicle = require('../models/vehicle')
 
 const create = async (req, res) => {
@@ -23,7 +21,7 @@ const create = async (req, res) => {
             owner: req.user._id,
         }
 
-        vehicle.serviceRecords.push(req.body)
+        vehicle.serviceRecords.push(toPush)
 
         await vehicle.save()
 

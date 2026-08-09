@@ -33,6 +33,7 @@ app.post('/auth/sign-in', authCtrl.signIn)
 app.post('/vehicles', verifyToken, vehicleCtrl.create)
 app.get('/vehicles', verifyToken, vehicleCtrl.index)
 app.get('/vehicles/:vehicleId', verifyToken, vehicleCtrl.show)
+app.put('/vehicles/:vehicleId', verifyToken, vehicleCtrl.update)
 
 app.listen(PORT, () => {
   console.log(`The express app is ready on port ${PORT}! 😀`)

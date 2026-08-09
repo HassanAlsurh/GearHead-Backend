@@ -44,10 +44,40 @@ const show = async (req, res) => {
   }
 };
 
+const update = async (req, res) => {
+  try {
+    const vehicle = await Vehicle.findById(req.params.vehicleId);
+
+    if (!vehicle) {
+      return res.status(404).json({ err: "Vehicle not found" });
+    }
+
+    if (!vehicle.owner.equals(req.user._id)) {
+      return res.status(403).send("Only the owner can edit this vehicle!");
+    }
+
+    const updatedVehicle = await Vehicle.findByIdAndUpdate(
+      req.params.vehicleId,
+      req.body,
+      // { new: true }
+      { returnDocument: 'after' }
+      //SINCE I GET THIS WARINING:
+      // (node:16256) [MONGOOSE] Warning: mongoose: the `new` option for `findOneAndUpdate()` and `findOneAndReplace()` is deprecated. Use `returnDocument: 'after'` instead.
+      // (Use `node --trace-warnings ...` to show where the warning was created)    
+    )
+
+    updatedVehicle._doc.owner = req.user;
+
+    res.status(200).json(updatedVehicle);
+  } catch (err) {
+    res.status(500).json({ err: err.message });
+  }
+};
 
 
 module.exports = {
   create,
   index,
   show,
+  update,
 }

@@ -1,5 +1,3 @@
-// vehicle controller
-
 const Vehicle = require("../models/vehicle.js");
 
 const create = async (req, res) => {

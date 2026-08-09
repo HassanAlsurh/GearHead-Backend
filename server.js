@@ -36,6 +36,8 @@ app.get('/vehicles/:vehicleId', verifyToken, vehicleCtrl.show)
 app.put('/vehicles/:vehicleId', verifyToken, vehicleCtrl.update)
 app.delete('/vehicles/:vehicleId', verifyToken, vehicleCtrl.deleteVehicle)
 
+app.post('/vehicles/:vehicleId/service-records', verifyToken, serviceCtrl.create)
+
 app.listen(PORT, () => {
   console.log(`The express app is ready on port ${PORT}! 😀`)
 })

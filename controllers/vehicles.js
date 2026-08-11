@@ -90,6 +90,17 @@ const update = async (req, res) => {
       return res.status(403).send("Only the owner can edit this vehicle!");
     }
 
+    const oldPublicId = vehicle.image?.publicId;
+
+    if (req.file) {
+      const uploadedImage = await uploadImage(req.file.buffer);
+
+      req.body.image = {
+        url: uploadedImage.secure_url,
+        publicId: uploadedImage.public_id
+      };
+    }
+
     const updatedVehicle = await Vehicle.findByIdAndUpdate(
       req.params.vehicleId,
       req.body,

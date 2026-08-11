@@ -65,11 +65,11 @@ const vehicleSchema = new mongoose.Schema({
     image: {
         url: {
             type: String,
-            required: true,
+            // required: true,
         },
         publicId: {
             type: String,
-            required: true,
+            // required: true,
         },
     },
     owner: {

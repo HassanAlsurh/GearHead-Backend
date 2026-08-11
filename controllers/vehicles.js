@@ -113,6 +113,15 @@ const update = async (req, res) => {
 
     updatedVehicle._doc.owner = req.user;
 
+
+    if (req.file && oldPublicId) {
+      try {
+        await cloudinary.uploader.destroy(oldPublicId, { invalidate: true });
+      } catch (cloudinaryError) {
+        console.error("Could not delete the old image:", cloudinaryError);
+      }
+    }
+
     res.status(200).json(updatedVehicle);
   } catch (err) {
     res.status(500).json({ err: err.message });

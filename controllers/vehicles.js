@@ -5,7 +5,7 @@ const uploadImage = (fileBuffer) => {
   return new Promise((resolve, reject) => {
     const uploadStream = cloudinary.uploader.upload_stream(
       {
-        folder: "open-house/listings",
+        folder: "gearhead_vehicles",
         resource_type: "image",
       },
       (error, result) => {
@@ -24,9 +24,22 @@ const uploadImage = (fileBuffer) => {
 
 const create = async (req, res) => {
   try {
+
+    if (req.file) {
+      const uploadedImage = await uploadImage(req.file.buffer);
+
+      req.body.image = {
+        url: uploadedImage.secure_url,
+        publicId: uploadedImage.public_id
+      };
+    }
+
     req.body.owner = req.user._id;
+
     const vehicle = await Vehicle.create(req.body);
+
     vehicle._doc.owner = req.user;
+
     res.status(201).json(vehicle);
   } catch (err) {
     console.log(err);

@@ -8,6 +8,9 @@ const mongoose = require('mongoose')
 const cors = require('cors')
 const morgan = require('morgan')
 
+const upload = require("./config/multer");
+const cloudinary = require("./config/cloudinary.js");
+
 const PORT = process.env.PORT ? process.env.PORT : "3000"
 
 const authCtrl = require('./controllers/auth')
@@ -26,7 +29,7 @@ app.use(cors())
 app.use(express.json())
 app.use(morgan('dev'))
 
-app.get('/', (req, res) => {res.send("GearHead's Backend is ONLINE!")})
+app.get('/', (req, res) => { res.send("GearHead's Backend is ONLINE!") })
 app.post('/auth/sign-up', authCtrl.signUp)
 app.post('/auth/sign-in', authCtrl.signIn)
 

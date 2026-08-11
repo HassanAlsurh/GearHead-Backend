@@ -7,6 +7,7 @@ const create = async (req, res) => {
     vehicle._doc.owner = req.user;
     res.status(201).json(vehicle);
   } catch (err) {
+    console.log(err);
     res.status(500).json({ err: err.message });
   }
 };

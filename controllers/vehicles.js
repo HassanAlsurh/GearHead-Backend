@@ -140,6 +140,14 @@ const deleteVehicle = async (req, res) => {
       return res.status(403).send("Only the owner can delete this vehicle!");
     }
 
+    if (vehicle.image?.publicId) {
+      try {
+        await cloudinary.uploader.destroy(vehicle.image.publicId, { invalidate: true });
+      } catch (cloudinaryError) {
+        console.error("Could not delete image from Cloudinary:", cloudinaryError);
+      }
+    }
+
     const deletedVehicle = await Vehicle.findByIdAndDelete(req.params.vehicleId);
     res.status(200).json(deletedVehicle);
   } catch (err) {

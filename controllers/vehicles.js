@@ -202,6 +202,39 @@ const invite = async (req, res) => {
   }
 }
 
+const deleteInvite = async (req, res) => {
+  try {
+
+    const vehicle = await Vehicle.findById(req.params.vehicleId);
+
+    if (!vehicle) {
+      return res.status(404).json({ err: "Vehicle not found" });
+    }
+
+    if (!vehicle.owner.equals(req.user._id)) {
+      return res.status(403).send("Only the owner can edit this vehicle!");
+    }
+
+    if (!req.body.invite) {
+      return res.status(404).json({ err: "Please provide a username" });
+    }
+    const invitedUser = await User.find({ username: req.body.invite })
+
+    const updatedVehicle = await Vehicle.findByIdAndUpdate(
+      req.params.vehicleId,
+      {
+        $pull: { sharedUsers: invitedUser._id },
+      },
+      { returnDocument: 'after' }
+    )
+
+    res.status(200).json(updatedVehicle);
+
+  } catch (err) {
+    res.status(500).json({ err: err.message });
+  }
+}
+
 const deleteVehicle = async (req, res) => {
   try {
     const vehicle = await Vehicle.findById(req.params.vehicleId);

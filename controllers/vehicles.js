@@ -220,10 +220,14 @@ const deleteInvite = async (req, res) => {
       return res.status(403).send("Only the owner can edit this vehicle!");
     }
 
-    if (!req.body.invite) {
+    if (!req.body.username) {
       return res.status(404).json({ err: "Please provide a username" });
     }
-    const invitedUser = await User.find({ username: req.body.invite })
+    const invitedUser = await User.findOne({ username: req.body.invite })
+
+    if (!invitedUser) {
+      return res.status(404).json({ err: "User not found" });
+    }
 
     const updatedVehicle = await Vehicle.findByIdAndUpdate(
       req.params.vehicleId,
@@ -260,8 +264,14 @@ const invitedShow = async (req, res) => {
       return res.status(404).json({ err: "Vehicle not found" });
     }
 
-    if (!vehicle.owner._id.equals(req.user._id)) {
-      return res.status(403).send("You're not authorized to view this vehicle!");
+    // if (!vehicle.owner._id.equals(req.user._id)) {
+    //   return res.status(403).send("You're not authorized to view this vehicle!");
+    // }
+
+    const isSharedUser = vehicle.sharedUsers.some((currUser) => currUser.equals(req.user._id));
+
+    if (!isSharedUser) {
+      return res.status(403).send("You're not authorized to view this shared vehicle!");
     }
 
     res.status(200).json(vehicle);

@@ -1,5 +1,5 @@
 const Vehicle = require("../models/vehicle.js");
-const User = required("../models/User.js")
+const User = require("../models/user.js")
 const cloudinary = require('../config/cloudinary.js')
 
 const uploadImage = (fileBuffer) => {
@@ -39,15 +39,20 @@ const create = async (req, res) => {
 
     req.body.owner = req.user._id;
 
+    // let invitedPerson 
+
+    // if (req.body.invite) {
+
+    //   const invitedUser = await User.find({username: req.body.invite})   
+    //   console.log('invited person: >>>>', invitedUser);
+
+    //   invitedPerson = invitedUser._id
+    // }
+
+
+
     const vehicle = await Vehicle.create(req.body);
 
-    if (req.body.invite) {
-
-      const invitedUser = User.find({username: req.body.invite})   
-      console.log(invitedUser);
-         
-      // vehicle.sharedUsers.push()
-    }
     vehicle._doc.owner = req.user;
 
     res.status(201).json(vehicle);
@@ -163,6 +168,39 @@ const update = async (req, res) => {
     res.status(500).json({ err: err.message });
   }
 };
+
+const invite = async (req, res) => {
+  try {
+
+    const vehicle = await Vehicle.findById(req.params.vehicleId);
+
+    if (!vehicle) {
+      return res.status(404).json({ err: "Vehicle not found" });
+    }
+
+    if (!vehicle.owner.equals(req.user._id)) {
+      return res.status(403).send("Only the owner can edit this vehicle!");
+    }
+
+    if (!req.body.invite) {
+      return res.status(404).json({ err: "Please provide a username" });
+    }
+    const invitedUser = await User.find({ username: req.body.invite })
+
+    const updatedVehicle = await Vehicle.findByIdAndUpdate(
+      req.params.vehicleId,
+      {
+        $push: { sharedUsers: invitedUser._id },
+      },
+      { returnDocument: 'after' }
+    )
+
+    res.status(200).json(updatedVehicle);
+
+  } catch (err) {
+    res.status(500).json({ err: err.message });
+  }
+}
 
 const deleteVehicle = async (req, res) => {
   try {

@@ -74,17 +74,6 @@ const index = async (req, res) => {
   }
 };
 
-const invitedIndex = async (req, res) => {
-  try {
-    const vehicles = await Vehicle.find({ sharedUsers: req.user._id })
-      .populate("owner")
-      .sort({ editedAt: -1 });
-
-    res.status(200).json(vehicles);
-  } catch (err) {
-    res.status(500).json({ err: err.message });
-  }
-};
 
 const show = async (req, res) => {
   try {
@@ -105,23 +94,7 @@ const show = async (req, res) => {
   }
 };
 
-const invitedShow = async (req, res) => {
-  try {
-    const vehicle = await Vehicle.findById(req.params.vehicleId)
 
-    if (!vehicle) {
-      return res.status(404).json({ err: "Vehicle not found" });
-    }
-
-    if (!vehicle.owner._id.equals(req.user._id)) {
-      return res.status(403).send("You're not authorized to view this vehicle!");
-    }
-
-    res.status(200).json(vehicle);
-  } catch (err) {
-    res.status(500).json({ err: err.message });
-  }
-};
 
 const update = async (req, res) => {
   try {
@@ -169,29 +142,56 @@ const update = async (req, res) => {
   }
 };
 
-const invite = async (req, res) => {
+const deleteVehicle = async (req, res) => {
   try {
-    
     const vehicle = await Vehicle.findById(req.params.vehicleId);
-    
+
     if (!vehicle) {
       return res.status(404).json({ err: "Vehicle not found" });
     }
-    
+
+    if (!vehicle.owner.equals(req.user._id)) {
+      return res.status(403).send("Only the owner can delete this vehicle!");
+    }
+
+    if (vehicle.image?.publicId) {
+      try {
+        await cloudinary.uploader.destroy(vehicle.image.publicId, { invalidate: true });
+      } catch (cloudinaryError) {
+        console.error("Could not delete image from Cloudinary:", cloudinaryError);
+      }
+    }
+
+    const deletedVehicle = await Vehicle.findByIdAndDelete(req.params.vehicleId);
+    res.status(200).json(deletedVehicle);
+  } catch (err) {
+    res.status(500).json({ err: err.message });
+  }
+};
+
+const invite = async (req, res) => {
+  try {
+
+    const vehicle = await Vehicle.findById(req.params.vehicleId);
+
+    if (!vehicle) {
+      return res.status(404).json({ err: "Vehicle not found" });
+    }
+
     if (!vehicle.owner.equals(req.user._id)) {
       return res.status(403).send("Only the owner can edit this vehicle!");
     }
-    console.log('BODY>>>>>>',req.body);
-    
+    console.log('BODY>>>>>>', req.body);
+
     if (!req.body.username) {
       return res.status(404).json({ err: "Please provide a username" });
     }
     const invitedUser = await User.findOne({ username: req.body.username })
-    
+
     if (!invitedUser) {
-        return res.status(404).json({ err: "User not found" });
+      return res.status(404).json({ err: "User not found" });
     }
-    
+
     const updatedVehicle = await Vehicle.findByIdAndUpdate(
       req.params.vehicleId,
       {
@@ -240,28 +240,31 @@ const deleteInvite = async (req, res) => {
   }
 }
 
-const deleteVehicle = async (req, res) => {
+const invitedIndex = async (req, res) => {
   try {
-    const vehicle = await Vehicle.findById(req.params.vehicleId);
+    const vehicles = await Vehicle.find({ sharedUsers: req.user._id })
+      .populate("owner")
+      .sort({ editedAt: -1 });
+
+    res.status(200).json(vehicles);
+  } catch (err) {
+    res.status(500).json({ err: err.message });
+  }
+};
+
+const invitedShow = async (req, res) => {
+  try {
+    const vehicle = await Vehicle.findById(req.params.vehicleId)
 
     if (!vehicle) {
       return res.status(404).json({ err: "Vehicle not found" });
     }
 
-    if (!vehicle.owner.equals(req.user._id)) {
-      return res.status(403).send("Only the owner can delete this vehicle!");
+    if (!vehicle.owner._id.equals(req.user._id)) {
+      return res.status(403).send("You're not authorized to view this vehicle!");
     }
 
-    if (vehicle.image?.publicId) {
-      try {
-        await cloudinary.uploader.destroy(vehicle.image.publicId, { invalidate: true });
-      } catch (cloudinaryError) {
-        console.error("Could not delete image from Cloudinary:", cloudinaryError);
-      }
-    }
-
-    const deletedVehicle = await Vehicle.findByIdAndDelete(req.params.vehicleId);
-    res.status(200).json(deletedVehicle);
+    res.status(200).json(vehicle);
   } catch (err) {
     res.status(500).json({ err: err.message });
   }

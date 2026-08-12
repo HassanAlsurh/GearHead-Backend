@@ -1,4 +1,5 @@
 const Vehicle = require("../models/vehicle.js");
+const User = required("../models/User.js")
 const cloudinary = require('../config/cloudinary.js')
 
 const uploadImage = (fileBuffer) => {
@@ -34,10 +35,19 @@ const create = async (req, res) => {
       };
     }
 
+
+
     req.body.owner = req.user._id;
 
     const vehicle = await Vehicle.create(req.body);
 
+    if (req.body.invite) {
+
+      const invitedUser = User.find({username: req.body.invite})   
+      console.log(invitedUser);
+         
+      // vehicle.sharedUsers.push()
+    }
     vehicle._doc.owner = req.user;
 
     res.status(201).json(vehicle);

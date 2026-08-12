@@ -269,5 +269,7 @@ module.exports = {
   update,
   deleteVehicle,
   invitedIndex,
-  invitedShow
+  invitedShow,
+  invite,
+  deleteInvite
 };

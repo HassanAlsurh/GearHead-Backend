@@ -39,6 +39,8 @@ app.get('/vehicles/:vehicleId', verifyToken, vehicleCtrl.show)
 app.put('/vehicles/:vehicleId', verifyToken, upload.single("image"), vehicleCtrl.update)
 app.delete('/vehicles/:vehicleId', verifyToken, vehicleCtrl.deleteVehicle)
 
+app.put('/vehicles/:vehicleId/invite', verifyToken, vehicleCtrl.invite)
+app.put('/vehicles/:vehicleId/uninvite', verifyToken, vehicleCtrl.deleteInvite)
 app.get('/vehicles/shared', verifyToken, vehicleCtrl.invitedIndex)
 app.get('/vehicles/shared/:vehicleId', verifyToken, vehicleCtrl.invitedShow)
 

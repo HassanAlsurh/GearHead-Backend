@@ -65,11 +65,9 @@ const vehicleSchema = new mongoose.Schema({
     image: {
         url: {
             type: String,
-            // required: true,
         },
         publicId: {
             type: String,
-            // required: true,
         },
     },
     owner: {
@@ -77,28 +75,12 @@ const vehicleSchema = new mongoose.Schema({
         ref: 'User',
         required: true
     },
-    // sharedUsers: [{
-    // }], //if I have time I will be trying to add a way to invite other user to a certain 'Vehicle'
+    sharedUsers: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }],
     serviceRecords: [serviceRecordSchema],
 }, { timestamps: true });
 
 const Vehicle = mongoose.model('Vehicle', vehicleSchema);
 module.exports = Vehicle;
-
-
-// image: {
-//     type: String,
-//     default: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=800&q=80'
-// },
-
-
-// bookCover: {
-//     url: {
-//         type: String,
-//             required: true,
-//       },
-//     publicId: {
-//         type: String,
-//             required: true,
-//       },
-// },

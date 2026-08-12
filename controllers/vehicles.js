@@ -59,6 +59,18 @@ const index = async (req, res) => {
   }
 };
 
+const invitedIndex = async (req, res) => {
+  try {
+    const vehicles = await Vehicle.find({ sharedUsers: req.user._id })
+      .populate("owner")
+      .sort({ editedAt: -1 });
+
+    res.status(200).json(vehicles);
+  } catch (err) {
+    res.status(500).json({ err: err.message });
+  }
+};
+
 const show = async (req, res) => {
   try {
     const vehicle = await Vehicle.findById(req.params.vehicleId)
@@ -104,11 +116,7 @@ const update = async (req, res) => {
     const updatedVehicle = await Vehicle.findByIdAndUpdate(
       req.params.vehicleId,
       req.body,
-      // { new: true }
       { returnDocument: 'after' }
-      //SINCE I GET THIS WARINING:
-      // (node:16256) [MONGOOSE] Warning: mongoose: the `new` option for `findOneAndUpdate()` and `findOneAndReplace()` is deprecated. Use `returnDocument: 'after'` instead.
-      // (Use `node --trace-warnings ...` to show where the warning was created)    
     )
 
     updatedVehicle._doc.owner = req.user;

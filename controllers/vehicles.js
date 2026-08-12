@@ -171,22 +171,27 @@ const update = async (req, res) => {
 
 const invite = async (req, res) => {
   try {
-
+    
     const vehicle = await Vehicle.findById(req.params.vehicleId);
-
+    
     if (!vehicle) {
       return res.status(404).json({ err: "Vehicle not found" });
     }
-
+    
     if (!vehicle.owner.equals(req.user._id)) {
       return res.status(403).send("Only the owner can edit this vehicle!");
     }
-
-    if (!req.body.invite) {
+    console.log('BODY>>>>>>',req.body);
+    
+    if (!req.body.username) {
       return res.status(404).json({ err: "Please provide a username" });
     }
-    const invitedUser = await User.find({ username: req.body.invite })
-
+    const invitedUser = await User.findOne({ username: req.body.username })
+    
+    if (!invitedUser) {
+        return res.status(404).json({ err: "User not found" });
+    }
+    
     const updatedVehicle = await Vehicle.findByIdAndUpdate(
       req.params.vehicleId,
       {

@@ -39,6 +39,9 @@ app.get('/vehicles/:vehicleId', verifyToken, vehicleCtrl.show)
 app.put('/vehicles/:vehicleId', verifyToken, upload.single("image"), vehicleCtrl.update)
 app.delete('/vehicles/:vehicleId', verifyToken, vehicleCtrl.deleteVehicle)
 
+app.get('/vehicles/shared', verifyToken, vehicleCtrl.invitedIndex)
+app.get('/vehicles/shared/:vehicleId', verifyToken, vehicleCtrl.invitedShow)
+
 app.post('/vehicles/:vehicleId/service-records', verifyToken, serviceCtrl.create)
 app.put('/vehicles/:vehicleId/service-records/:recordId', verifyToken, serviceCtrl.update)
 app.delete('/vehicles/:vehicleId/service-records/:recordId', verifyToken, serviceCtrl.deleteRecord)

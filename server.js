@@ -33,10 +33,10 @@ app.get('/', (req, res) => { res.send("GearHead's Backend is ONLINE!") })
 app.post('/auth/sign-up', authCtrl.signUp)
 app.post('/auth/sign-in', authCtrl.signIn)
 
-app.post('/vehicles', verifyToken, vehicleCtrl.create)
+app.post('/vehicles', verifyToken, upload.single("image"), vehicleCtrl.create)
 app.get('/vehicles', verifyToken, vehicleCtrl.index)
 app.get('/vehicles/:vehicleId', verifyToken, vehicleCtrl.show)
-app.put('/vehicles/:vehicleId', verifyToken, vehicleCtrl.update)
+app.put('/vehicles/:vehicleId', verifyToken, upload.single("image"), vehicleCtrl.update)
 app.delete('/vehicles/:vehicleId', verifyToken, vehicleCtrl.deleteVehicle)
 
 app.post('/vehicles/:vehicleId/service-records', verifyToken, serviceCtrl.create)

@@ -7,7 +7,7 @@ A robust, full-stack vehicle management platform built with the MERN stack (Mong
 ![Track detailed service history and costs](public/detailsPage.png)
 
 ### Live Demo
-[Deployed Website](hhttps://gearhead1.netlify.app/)
+[Deployed Website](https://gearhead1.netlify.app/)
 
 [Planning Material](https://trello.com/b/NnsA8Oei/gearhead-track-you-own-vehicles-history)
 

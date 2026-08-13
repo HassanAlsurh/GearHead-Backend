@@ -98,7 +98,6 @@ Open your browser and navigate to `http://localhost:5173`.
 ### Backend (`gearhead-backend/`)
 * **`models/`**: Mongoose schemas for `User` and `Vehicle` (which includes embedded `ServiceRecord` subdocuments).
 * **`controllers/`**: API route handlers for authentication, vehicle CRUD, and sharing logic.
-* **`routes/`**: Express routers to define API endpoints.
 
 ### Frontend (`gearhead-frontend/`)
 * **`src/components/`**: Reusable UI elements like the Navigation bar.

@@ -40,8 +40,8 @@ This project uses a decoupled architecture with separate frontend and backend di
 
 **1. Clone the repository**
 ```bash
-git clone [https://github.com/YourUsername/GearHead.git](https://github.com/YourUsername/GearHead.git)
-cd GearHead
+git clone https://github.com/HassanAlsurh/GearHead-Frontend
+git clone https://github.com/HassanAlsurh/GearHead-Backend
 ```
 
 **2. Backend Setup**
